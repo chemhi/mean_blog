@@ -1,0 +1,23 @@
+{
+  "name": "mean_blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chemhi/mean_blog.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chemhi/mean_blog/issues"
+  },
+  "homepage": "https://github.com/chemhi/mean_blog#readme",
+  "dependencies": {
+    "ejs": "^2.5.5",
+    "express": "^4.14.0"
+  }
+}
