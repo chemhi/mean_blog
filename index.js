@@ -3,6 +3,7 @@
 var express = require('express');           // simple and convenient on express.js
 var mongoose = require('mongoose');         // mongo DB
 var bodyParser = require('body-parser');    // Using body-parser module
+var methodOverride = require('method-override'); //
 var app = express();                        // Makeing use of the express object
 
 // DB Setting ...
@@ -26,6 +27,7 @@ app.set("view engine", "ejs");  //1
 app.use(express.static(__dirname + '/public')); // default directory
 app.use(bodyParser.json());                     // can be only useable with the json type
 app.use(bodyParser.urlencoded({extended:true}));  // encoding the url as the readable type
+app.use(methodOverride("_method"));
 
 // DB schema
 var contactSchema = mongoose.Schema({
@@ -51,6 +53,7 @@ app.get('/contacts', function(req, res){
   Contact.find({}, function(err, items){  // Contact.find will refer to the DB
     if(err) return res.json(err);         // if error, show the error in json type
     res.render('contacts/index', {contacts_obj:items});
+    console.log(items);
           // pass 'items' to the contacts/index.ejs on the name of 'contacts_obj'
   });
 });
@@ -65,6 +68,38 @@ app.post('/contacts', function(req, res){
     res.redirect('/contacts');      // show the updated indices
   });
 });
+
+// Show me the List contents
+app.get('/contacts/:id', function(req, res){
+    Contact.findOne({_id:req.params.id}, function(err, item){
+    if(err) return res.json(err);
+    res.render("contacts/show", {contact_obj:item});
+    console.log(item);
+  });
+});
+//Edit user's information
+app.get('/contacts/:id/edit',function(req, res){
+  Contact.findOne({_id:req.params.id}, function(err, item){
+    if(err) return res.json(err);
+    res.render("contacts/edit", {contact_obj:item});
+      console.log(item);
+  });
+});
+//Update user's information
+app.put('/contacts/:id',function(req, res){
+  Contact.findOneAndUpdate({_id:req.params.id}, req.body, function(err, item){
+    if(err) return res.json(err);
+    res.redirect("/contacts/"+req.params.id);
+  });
+});
+//Destroy the targeted user
+app.delete('/contacts/:id', function(req, res){
+  Contact.remove({_id:req.params.id}, function(err){
+    if(err) return res.json(err);
+    res.redirect("/contacts");
+  });
+});
+
 
 app.listen(3000, function(){
   console.log('Server On!');
