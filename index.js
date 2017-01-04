@@ -29,77 +29,9 @@ app.use(bodyParser.json());                     // can be only useable with the 
 app.use(bodyParser.urlencoded({extended:true}));  // encoding the url as the readable type
 app.use(methodOverride("_method"));
 
-// DB schema
-var contactSchema = mongoose.Schema({
-  name:{type:String, required:true, unique:true},
-  email:{type:String, required:true, unique:true},
-  phone:{type:String}
-});
-// Generate the 'Contact' object model on the name of contact which has contact Schema
-// contact_model : Schema model name,
-// Contact : an Object instance to be used in the whole this code.
-var Contact = mongoose.model('contact_model', contactSchema);
-
-// Routes
-// Redirection to the default Route
-app.get('/', function(req, res){    // be always redirected to /contacts
-  res.redirect("/contacts");
-});
-
-// Show me the current indices
-// items : Chunk of the DB data
-// contacts_obj : a name of the argument to pass to the ejs forms.
-app.get('/contacts', function(req, res){
-  Contact.find({}, function(err, items){  // Contact.find will refer to the DB
-    if(err) return res.json(err);         // if error, show the error in json type
-    res.render('contacts/index', {contacts_obj:items});
-    console.log(items);
-          // pass 'items' to the contacts/index.ejs on the name of 'contacts_obj'
-  });
-});
-// Make the new forms
-app.get('/contacts/new', function(req, res){
-  res.render("contacts/new");     //watching the contacts/new.ejs
-});
-// POST the new form to the DB
-app.post('/contacts', function(req, res){
-  Contact.create(req.body, function(err, contact){  //contact is ?
-    if(err) return res.json(err);
-    res.redirect('/contacts');      // show the updated indices
-  });
-});
-
-// Show me the List contents
-app.get('/contacts/:id', function(req, res){
-    Contact.findOne({_id:req.params.id}, function(err, item){
-    if(err) return res.json(err);
-    res.render("contacts/show", {contact_obj:item});
-    console.log(item);
-  });
-});
-//Edit user's information
-app.get('/contacts/:id/edit',function(req, res){
-  Contact.findOne({_id:req.params.id}, function(err, item){
-    if(err) return res.json(err);
-    res.render("contacts/edit", {contact_obj:item});
-      console.log(item);
-  });
-});
-//Update user's information
-app.put('/contacts/:id',function(req, res){
-  Contact.findOneAndUpdate({_id:req.params.id}, req.body, function(err, item){
-    if(err) return res.json(err);
-    res.redirect("/contacts/"+req.params.id);
-  });
-});
-//Destroy the targeted user
-app.delete('/contacts/:id', function(req, res){
-  Contact.remove({_id:req.params.id}, function(err){
-    if(err) return res.json(err);
-    res.redirect("/contacts");
-  });
-});
-
+//make the modules for redirection
+app.use("/", require("./routes/home"));
+app.use("/contacts", require("./routes/contacts"));
 
 app.listen(3000, function(){
   console.log('Server On!');
