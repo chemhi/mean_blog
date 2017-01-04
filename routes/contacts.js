@@ -10,7 +10,6 @@ router.get('/', function(req, res){
   Contact.find({}, function(err, items){  // Contact.find will refer to the DB
     if(err) return res.json(err);         // if error, show the error in json type
     res.render('contacts/index', {contacts_obj:items});
-    console.log(items);
           // pass 'items' to the contacts/index.ejs on the name of 'contacts_obj'
   });
 });
@@ -31,7 +30,6 @@ router.get('/:id', function(req, res){
     Contact.findOne({_id:req.params.id}, function(err, item){
     if(err) return res.json(err);
     res.render("contacts/show", {contact_obj:item});
-    console.log(item);
   });
 });
 //Edit user's information
@@ -39,7 +37,6 @@ router.get('/:id/edit',function(req, res){
   Contact.findOne({_id:req.params.id}, function(err, item){
     if(err) return res.json(err);
     res.render("contacts/edit", {contact_obj:item});
-      console.log(item);
   });
 });
 //Update user's information
